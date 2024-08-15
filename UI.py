@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from Function import timer_start,timer_stop, stopwatch,apply_theme_to_titlebar
+from Function import stopwatch,change_theme,customize_style, Timer
 from PIL import Image, ImageTk
 import sv_ttk
 
@@ -10,23 +10,24 @@ import sv_ttk
 
 class UI:
     def __init__(self, root):
-
-        root.geometry("800x300")
-        global timer_icon, stop_watch
+        root.title("Clock")
+        root.geometry("900x400")
+        global timer_icon, stop_watch,start_icon,stop_icon
         self.minutes = IntVar()
-        self.second = IntVar()   
+        self.second = IntVar()
+        self.theme_value = BooleanVar()   
         timer_icon = self.get_img("Assets\\hourglass.png", 25, 25)
         stop_watch = self.get_img("Assets\\stopwatch.png", 30, 30)
 
-        notebook = ttk.Notebook(root)
-        notebook.pack(fill=BOTH, expand=True)
+        self.notebook = ttk.Notebook(root)
+        self.notebook.pack(fill=BOTH, expand=True)
         # create timer tab
-        tab1 = Frame(notebook)
-        notebook.add(tab1, text="Timer", image=timer_icon, compound=LEFT)
+        tab1 = Frame(self.notebook)
+        self.notebook.add(tab1, text="Timer", image=timer_icon, compound=LEFT)
 
         # create stopwatch tab
-        tab2 = Frame(notebook)
-        notebook.add(tab2, text="Stop Watch", image=stop_watch, compound=LEFT)
+        tab2 = Frame(self.notebook)
+        self.notebook.add(tab2, text="Stop Watch", image=stop_watch, compound=LEFT)
 
         # first half frame
         tab1_firstFm = Frame(tab1)
@@ -40,6 +41,11 @@ class UI:
         timer_frame = Frame(tab1_firstFm)
         timer_frame.pack(side="bottom")
 
+        #switch theme
+        theme = ttk.Checkbutton(tab1_firstFm, text="Dark Mode", style="Switch.TCheckbutton", variable=self.theme_value,
+                                command=lambda: change_theme(self, root))
+        theme.pack(side= RIGHT, padx=5)
+        
         # minute frame
         minute_frame = Frame(timer_frame)
         minute_frame.grid(row=1, column=1)
@@ -53,7 +59,7 @@ class UI:
             minute_frame,
             font=("Roboto mono", 50),
             width=5,
-            #relief="solid",
+            
             justify=RIGHT,
             textvariable=self.minutes
         )
@@ -67,7 +73,7 @@ class UI:
             second_frame,
             font=("Roboto mono", 50),
             width=5,
-            #relief="solid",
+            
             justify=RIGHT,
             textvariable=self.second,
             
@@ -78,28 +84,29 @@ class UI:
         )
 
         # get icons
+        
         start_icon = self.get_img(img="Assets\\play-button_724963.png")
         stop_icon = self.get_img(img="Assets\\pause _icon.png")
 
         # control frame(start + stop)
         control_frame = Frame(tab1_secondFm)
-        control_frame.pack(side="bottom", anchor="w")
+        control_frame.pack(side="bottom", anchor="w", padx=10, pady=20)
+        #create Timer_object
+        timer_obj = Timer(self, root)
 
-        start_button = ttk.Button(
+        self.start_button = ttk.Button(
             control_frame, text="Start", width=15, image=start_icon, compound=LEFT,
-            command=lambda: timer_start(self,root),#style="Accent.TButton",
+            command=lambda: timer_obj.start(),#style="Accent.TButton",
             padding= (1,1)
         )
-        start_button.grid(row=0, column=0)
+        self.start_button.grid(row=0, column=0)
 
-        stop_button = ttk.Button(
+        self.stop_button = ttk.Button(
             control_frame, text="Stop", width=15, image=stop_icon, compound=LEFT, 
-            command=lambda: timer_stop(self),
+            command=lambda: timer_obj.stop(),
             padding= (1,1)
         )
-        stop_button.grid(row=0, column=1)
-        start_button.image = start_icon
-        stop_button.image = stop_icon
+        self.stop_button.grid(row=0, column=1)
 
     def get_img(self, img, width=20, height=20):
         start_img = Image.open(img)
@@ -110,21 +117,10 @@ class UI:
 
 if __name__ == "__main__":
     window = Tk()
-    
+    sv_ttk.set_theme("light")
     # window.call("source", "Azure/azure.tcl")
     # window.call("set_theme", "light")
-    sv_ttk.set_theme("dark")
-    apply_theme_to_titlebar(window)
-    style = ttk.Style(window)
-    
-    style.configure(
-        "TNotebook.Tab", width=window.winfo_screenwidth(), font=("Roboto mono", 20),
-        background="#3B1A4F"
-        
-    )
-    style.map("TNotebook.Tab",  background=[("selected", '#BC32C3')])
-    style.configure("TButton", font=("Roboto mono", 12))
-    
+    customize_style(window)
     ui= UI(window)
     ui.minutes.set(00)
     ui.second.set(00)
