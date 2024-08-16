@@ -14,8 +14,8 @@ class UI:
         
         root.geometry("900x400")
         global timer_icon, stop_watch,start_icon,stop_icon,close,minimize, maximize
-        self.minutes = IntVar()
-        self.second = IntVar()
+        self.minutes = StringVar()
+        self.second = StringVar()
         self.theme_value = BooleanVar()   
         timer_icon = self.get_img("Assets\\hourglass.png", 25, 25)
         stop_watch = self.get_img("Assets\\stopwatch.png", 30, 30)
@@ -97,6 +97,7 @@ class UI:
         Label(minute_frame, text="m", font=("Roboto mono", 20)).grid(
             row=0, column=1, sticky=S
         )
+        self.minute_ui.bind("<Button-1>", lambda e: self.minute_ui.delete(0,tk.END))
 
         # second UI that allow user to input second
         self.second_ui = ttk.Entry(
@@ -112,6 +113,7 @@ class UI:
         Label(second_frame, text="s", font=("Roboto mono", 20)).grid(
             row=0, column=1, sticky=S
         )
+        self.second_ui.bind("<Button-1>", lambda e: self.second_ui.delete(0,tk.END))
 
         # get icons
         
@@ -166,8 +168,8 @@ if __name__ == "__main__":
     window.bind('<B1-Motion>',move)
     ui= UI(window)
     
-    ui.minutes.set(00)
-    ui.second.set(00)
+    ui.minutes.set("00")
+    ui.second.set("00")
     change_theme(ui,window)
     
     

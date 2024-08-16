@@ -12,29 +12,39 @@ class Timer:
         self.stop_flag = False
         
     def count_down(self):
-        self.master.minute_ui.configure(state=tk.DISABLED)
-        self.master.second_ui.configure(state=tk.DISABLED)
-        for i in range((self.master.minutes.get()*60)+(self.master.second.get())):
-            minutes = self.master.minutes.get()
-            seconds = self.master.second.get()
-            if seconds == 0:
-                minutes -= 1
-                self.master.second.set(60)
-                self.master.minutes.set(minutes)
+        if self.master.minutes.get().isdigit() and self.master.second.get().isdigit():
+            self.master.minute_ui.configure(state=tk.DISABLED)
+            self.master.second_ui.configure(state=tk.DISABLED)
+            
+            if self.master.minutes.get()=='':
+                self.master.minutes.set("00")
+            if self.master.second.get()=='':
+                self.master.second.set("00")
+
+            for i in range((int(self.master.minutes.get())*60)+int(self.master.second.get())):
+                minutes = int(self.master.minutes.get())
+                seconds = int(self.master.second.get())
+                if seconds == 0:
+                    minutes -= 1
+                    self.master.second.set("60")
+                    self.master.minutes.set((f"0{str(minutes)}") if len(str(minutes))==1 else str(minutes))
+                    self.root.update_idletasks()
+                else:
+                    seconds -= 1
+                    self.master.second.set((f"0{str(seconds)}") if len(str(seconds))==1 else str(seconds))
+                    self.root.update_idletasks()
+                time.sleep(1)
+                if self.stop_flag:
+                    break
+            if not self.stop_flag:
+                self.master.second.set("00")
+                self.master.minute_ui.configure(state=tk.NORMAL)
+                self.master.second_ui.configure(state=tk.NORMAL)
                 self.root.update_idletasks()
-            else:
-                seconds -= 1
-                self.master.second.set(seconds)
-                self.root.update_idletasks()
-            time.sleep(1)
-            if self.stop_flag:
-                break
-        if not self.stop_flag:
-            self.master.second.set(0)
-            self.master.minute_ui.configure(state=tk.NORMAL)
-            self.master.second_ui.configure(state=tk.NORMAL)
-            self.root.update_idletasks()
-        
+        else:
+            self.master.minutes.set("00")
+            self.master.second.set("00")
+            messagebox.showerror('Error!', 'Please enter only number')
     def start(self):
         if self.stop_flag:
             self.stop_flag=False
