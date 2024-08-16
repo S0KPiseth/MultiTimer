@@ -2,7 +2,7 @@
 import time
 import tkinter as tk
 import threading
-import sv_ttk
+import sv_ttk # type: ignore
 from tkinter import ttk, messagebox
 not_full_screen= False
 class Timer:
@@ -51,35 +51,53 @@ def stopwatch():
 
 def change_theme(master, root):
     
-    global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, stop_watch_white
     
+    global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, stop_watch_white, timer_notst, stop_watch_notst
+    
+    #identify tab id
     tab_index = int(master.notebook.index(master.notebook.select()))
-    
+
+    #get icon as photoimage
     timer_icon_white = master.get_img("Assets\\hourglass_white.png", 25, 25)
     stop_watch_white = master.get_img("Assets\\stopwatch_white.png", 25, 25)
     timer_icon = master.get_img("Assets\\hourglass.png", 25, 25)
     stop_watch = master.get_img("Assets\\stopwatch.png", 25, 25)
-
+    timer_notst=master.get_img("Assets\\hourglass_notst.png", 25, 25)
+    stop_watch_notst=master.get_img("Assets\\stopwatch_notst.png", 25, 25)
+    
+    #apply theme
     if master.theme_value.get():
         start_icon = master.get_img(img="Assets\\play_icon_white.png")
         stop_icon = master.get_img(img="Assets\\x.png")
         sv_ttk.set_theme("dark")
+        color = '#2f2f2f'
+        #config title bar button
+        master.close.config(bg=color)
+        master.minimize.config(bg=color)
+        master.maximize.config(bg=color)
+        
         customize_style(root,master.theme_value.get())
+        
         if tab_index ==0:
             timer_icon=timer_icon_white
+            stop_watch=stop_watch_notst
         elif tab_index ==1:
-            print("I'm invoked")
             stop_watch=stop_watch_white
+            timer_icon=timer_notst
     else:
         sv_ttk.set_theme("light")
+        color = '#e7e7e7'
+        #config title bar button
+        master.close.config(bg=color)
+        master.minimize.config(bg=color)
+        master.maximize.config(bg=color)
         customize_style(root,master.theme_value.get())
         start_icon = master.get_img(img="Assets\\play-button_724963.png")
         stop_icon = master.get_img(img="Assets\\pause _icon.png")
         if tab_index ==0:
-            stop_watch=stop_watch_white
-            
+            stop_watch=stop_watch_notst
         elif tab_index ==1:
-            timer_icon=timer_icon_white
+            timer_icon=timer_notst
     
 
     master.notebook.tab(0, image=timer_icon)
@@ -103,10 +121,10 @@ def customize_style(window, theme):
                                     })]
                  )
     if theme:
-        style.map("TNotebook.Tab",  foreground=[("selected", 'white'), ("!selected", 'grey')],
+        style.map("TNotebook.Tab",  foreground=[("selected", 'white'), ("!selected", '#8b8b8b')],
                   font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
     else:
-        style.map("TNotebook.Tab",  foreground=[("selected", 'black'), ("!selected", 'grey')])
+        style.map("TNotebook.Tab",  foreground=[("selected", 'black'), ("!selected", '#8b8b8b')])
     style.configure("TButton", font=("Roboto mono", 12))
     style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
 def close_win(root):

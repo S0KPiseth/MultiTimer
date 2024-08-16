@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk
 from Function import *
 from PIL import Image, ImageTk
-import sv_ttk
 from Function import minimize_window
 
 # create interface
@@ -27,11 +26,11 @@ class UI:
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=BOTH, expand=True)
         #custom title bar
-        self.title_frame = ttk.Frame(self.notebook,relief="flat", border=0)
+        self.title_frame = Frame(self.notebook,relief="flat", border=0)
         self.title_frame.pack(side=TOP, anchor=E,pady=8)
         self.close =Button(self.title_frame, text='',
                                image=close,
-                               bg='#e7e7e7',
+                               
                                relief='flat',
                                activebackground="#e7e7e7",
                                border=0,
@@ -39,14 +38,14 @@ class UI:
                                command=lambda: close_win(root))
         self.close.grid(row=0, column=2)
         self.minimize = Button(self.title_frame, text='', image=minimize,
-                               bg='#e7e7e7',
+                               
                                relief='flat',
                                activebackground="#e7e7e7",
                                border=0,width=30,
                                command=lambda: minimize_window(root))
         self.minimize.grid(row=0, column=0)
         self.maximize=Button(self.title_frame, text='', image=maximize,
-                               bg='#e7e7e7',
+                               
                                relief='flat',
                                activebackground="#e7e7e7",
                                border=0,width=30,
