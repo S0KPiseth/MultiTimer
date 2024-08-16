@@ -149,3 +149,15 @@ def maximize_win(root):
         not_full_screen=True
 def minimize_window(root):
    messagebox.showwarning("Sorry!", "You cannot iconify the window")
+
+def limit_digit(master, box, second=False):
+    #customize input to only two digit
+    if len(box.get()) ==2:
+        value =box.get()
+        out_value = value[0]
+        box.set(value[1:len(value)])
+        if second:
+            master.minute_ui.insert(tk.END, out_value)
+            
+            if len(master.minutes.get())>2:
+                master.minute_ui.delete(0)

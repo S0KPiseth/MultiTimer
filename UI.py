@@ -98,7 +98,8 @@ class UI:
             row=0, column=1, sticky=S
         )
         self.minute_ui.bind("<Button-1>", lambda e: self.minute_ui.delete(0,tk.END))
-
+        self.minute_ui.bind("<Key>", lambda e: limit_digit(self,self.minutes))
+        
         # second UI that allow user to input second
         self.second_ui = ttk.Entry(
             second_frame,
@@ -114,7 +115,7 @@ class UI:
             row=0, column=1, sticky=S
         )
         self.second_ui.bind("<Button-1>", lambda e: self.second_ui.delete(0,tk.END))
-
+        self.second_ui.bind("<Key>", lambda e: limit_digit(self,self.second,True))
         # get icons
         
         start_icon = self.get_img(img="Assets\\play-button_724963.png")
