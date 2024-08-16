@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import ttk
-from Function import stopwatch,change_theme,customize_style, Timer
+from Function import *
 from PIL import Image, ImageTk
 import sv_ttk
+from Function import minimize_window
 
 # create interface
 
@@ -11,16 +12,46 @@ import sv_ttk
 class UI:
     def __init__(self, root):
         root.title("Clock")
+        
         root.geometry("900x400")
-        global timer_icon, stop_watch,start_icon,stop_icon
+        global timer_icon, stop_watch,start_icon,stop_icon,close,minimize, maximize
         self.minutes = IntVar()
         self.second = IntVar()
         self.theme_value = BooleanVar()   
         timer_icon = self.get_img("Assets\\hourglass.png", 25, 25)
         stop_watch = self.get_img("Assets\\stopwatch.png", 30, 30)
+        close = self.get_img("Assets\\pause _icon.png", 25,25)
+        minimize = self.get_img("Assets\\minus.png",25,25)
+        maximize = self.get_img("Assets\\maximize-2.png",25,25)
 
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=BOTH, expand=True)
+        #custom title bar
+        self.title_frame = ttk.Frame(self.notebook,relief="flat", border=0)
+        self.title_frame.pack(side=TOP, anchor=E,pady=8)
+        self.close =Button(self.title_frame, text='',
+                               image=close,
+                               bg='#e7e7e7',
+                               relief='flat',
+                               activebackground="#e7e7e7",
+                               border=0,
+                               width=30,
+                               command=lambda: close_win(root))
+        self.close.grid(row=0, column=2)
+        self.minimize = Button(self.title_frame, text='', image=minimize,
+                               bg='#e7e7e7',
+                               relief='flat',
+                               activebackground="#e7e7e7",
+                               border=0,width=30,
+                               command=lambda: minimize_window(root))
+        self.minimize.grid(row=0, column=0)
+        self.maximize=Button(self.title_frame, text='', image=maximize,
+                               bg='#e7e7e7',
+                               relief='flat',
+                               activebackground="#e7e7e7",
+                               border=0,width=30,
+                               command=lambda: maximize_win(root))
+        self.maximize.grid(row=0, column=1)
         # create timer tab
         tab1 = Frame(self.notebook)
         self.notebook.add(tab1, text="Timer", image=timer_icon, compound=LEFT)
@@ -107,6 +138,8 @@ class UI:
             padding= (1,1)
         )
         self.stop_button.grid(row=0, column=1)
+        self.notebook.bind('<<NotebookTabChanged>>', lambda e: change_theme(self, root))
+        
 
     def get_img(self, img, width=20, height=20):
         start_img = Image.open(img)
@@ -117,12 +150,26 @@ class UI:
 
 if __name__ == "__main__":
     window = Tk()
-    sv_ttk.set_theme("light")
-    # window.call("source", "Azure/azure.tcl")
-    # window.call("set_theme", "light")
-    customize_style(window)
+    #move window without title bar
+    def move(event):
+        
+        x= window.winfo_x()-window.startX + event.x
+        y = window.winfo_y()-window.startY + event.y
+        window.geometry(f'+{x}+{y}')
+    
+    def origin_cords(event):
+        window.startX= event.x
+        window.startY= event.y
+    
+    window.overrideredirect(True)
+
+    window.bind('<Button-1>', origin_cords)
+    window.bind('<B1-Motion>',move)
     ui= UI(window)
+    
     ui.minutes.set(00)
     ui.second.set(00)
+    change_theme(ui,window)
+    
     
     window.mainloop()

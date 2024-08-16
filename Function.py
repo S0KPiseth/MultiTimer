@@ -2,11 +2,9 @@
 import time
 import tkinter as tk
 import threading
-import pywinstyles
-import sys
 import sv_ttk
-from tkinter import ttk
-
+from tkinter import ttk, messagebox
+not_full_screen= False
 class Timer:
     def __init__(self, master, root):
         self.master=master
@@ -52,54 +50,47 @@ def stopwatch():
 
 
 def change_theme(master, root):
-    global timer_icon, stop_watch, start_icon, stop_icon
+    
+    global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, stop_watch_white
+    
+    tab_index = int(master.notebook.index(master.notebook.select()))
+    
+    timer_icon_white = master.get_img("Assets\\hourglass_white.png", 25, 25)
+    stop_watch_white = master.get_img("Assets\\stopwatch_white.png", 25, 25)
+    timer_icon = master.get_img("Assets\\hourglass.png", 25, 25)
+    stop_watch = master.get_img("Assets\\stopwatch.png", 25, 25)
 
     if master.theme_value.get():
-        timer_icon = master.get_img("Assets\\hourglass_white.png", 25, 25)
-        stop_watch = master.get_img("Assets\\stopwatch_white.png", 30, 30)
         start_icon = master.get_img(img="Assets\\play_icon_white.png")
         stop_icon = master.get_img(img="Assets\\x.png")
         sv_ttk.set_theme("dark")
-        apply_theme_to_titlebar(root)
-        customize_style(root)
-
+        customize_style(root,master.theme_value.get())
+        if tab_index ==0:
+            timer_icon=timer_icon_white
+        elif tab_index ==1:
+            print("I'm invoked")
+            stop_watch=stop_watch_white
     else:
         sv_ttk.set_theme("light")
-        apply_theme_to_titlebar(root)
-        customize_style(root)
-        timer_icon = master.get_img("Assets\\hourglass.png", 25, 25)
-        stop_watch = master.get_img("Assets\\stopwatch.png", 30, 30)
+        customize_style(root,master.theme_value.get())
         start_icon = master.get_img(img="Assets\\play-button_724963.png")
         stop_icon = master.get_img(img="Assets\\pause _icon.png")
+        if tab_index ==0:
+            stop_watch=stop_watch_white
+            
+        elif tab_index ==1:
+            timer_icon=timer_icon_white
+    
+
     master.notebook.tab(0, image=timer_icon)
     master.notebook.tab(1, image=stop_watch)
+
     master.start_button.configure(image=start_icon)
     master.stop_button.configure(image=stop_icon)
 
-# https://github.com/rdbende/Sun-Valley-ttk-theme
-
-
-def apply_theme_to_titlebar(root):
-    version = sys.getwindowsversion()
-
-    if version.major == 10 and version.build >= 22000:
-        # Set the title bar color to the background color on Windows 11 for better appearance
-        pywinstyles.change_header_color(
-            root, "#1c1c1c" if sv_ttk.get_theme() == "dark" else "#fafafa")
-    elif version.major == 10:
-        pywinstyles.apply_style(
-            root, "dark" if sv_ttk.get_theme() == "dark" else "normal")
-
-        # A hacky way to update the title bar's color on Windows 10 (it doesn't update instantly like on Windows 11)
-        root.wm_attributes("-alpha", 0.99)
-        root.wm_attributes("-alpha", 1)
-
-
-def customize_style(window):
+def customize_style(window, theme):
     style = ttk.Style(window)
-    style.configure(
-        "TNotebook.Tab", width=window.winfo_screenwidth(), font=("Roboto mono", 18, "bold"),
-    )
+    style.map("TNotebook.Tab",font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
     # remove dotted line around notebook tabs(https://stackoverflow.com/questions/23354303/removing-ttk-notebook-tab-dashed-line?rq=4)
     style.layout("Tab",
                  [('Notebook.tab', {'sticky': 'nswe', 'children':
@@ -111,6 +102,22 @@ def customize_style(window):
                                                            })],
                                     })]
                  )
-    style.map("TNotebook.Tab",  background=[("selected", '#BC32C3')])
+    if theme:
+        style.map("TNotebook.Tab",  foreground=[("selected", 'white'), ("!selected", 'grey')],
+                  font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
+    else:
+        style.map("TNotebook.Tab",  foreground=[("selected", 'black'), ("!selected", 'grey')])
     style.configure("TButton", font=("Roboto mono", 12))
     style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
+def close_win(root):
+    root.after(300, root.destroy())
+def maximize_win(root):
+    global not_full_screen
+    if not_full_screen:
+        root.geometry('900x400')
+        not_full_screen=False
+    else:
+        root.geometry(f'{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0')
+        not_full_screen=True
+def minimize_window(root):
+   messagebox.showwarning("Sorry!", "You cannot iconify the window")
