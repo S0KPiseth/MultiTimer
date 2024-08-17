@@ -5,7 +5,7 @@
 1. **Clone repository**
    ```
    git clone https://github.com/S0KPiseth/MultiTimer.git
-   cd MuliTImer
+   cd MultiTimer
    ```
 2. **Create a virtual environment:**
     ```sh
