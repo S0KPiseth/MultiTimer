@@ -1,6 +1,25 @@
-# MultiTimer⏳
-## Preview
+<h1 align="center" id="title">MultiTimer</h1>
+
+<p align="center"><img src="https://img.shields.io/github/license/S0KPiseth/MultiTimer?color=ligthgreen" alt="shields"><img src="https://img.shields.io/github/languages/top/s0kPiseth/MultiTimer?color=%234cc71e" alt="shields"><img src="https://img.shields.io/github/repo-size/s0kpiseth/MultiTimer" alt="shields"><img src="https://img.shields.io/github/commit-activity/w/s0kpiseth/MultiTimer" alt="shields"><img src="https://img.shields.io/github/stars/s0kpiseth/MultiTimer" alt="shields"><img src="https://img.shields.io/github/watchers/s0kpiseth/MultiTimer" alt="shields"></p>
+
+<h2>Demo</h2>
+
 ![](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/preview.gif)
+<h2>Features</h2>
+
+Here're some of the project's best features:
+
+*   Timer
+*   Stopwatch
+
+<h2>Screenshots</h2>
+
+| Theme: Light                                | Theme: Dark                               |
+|---------------------------------------------|--------------------------------------------|
+| ![Timer Light](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_timer_light.png) | ![Timer Dark](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_timer_dark.png) |
+| ![Stopwatch Light](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_stopwatch_inactive_light.png) | ![Stopwatch Dark](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_stopwatch_active_dark.png) |
+
+
 ## Installing
 1. **Clone repository**
    ```
