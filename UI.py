@@ -1,9 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from Function import *
-from PIL import Image, ImageTk
-from Function import minimize_window
-import math
+
+
 
 # create interface
 
@@ -43,7 +42,7 @@ class UI:
                             activebackground="#e7e7e7",
                             border=0,
                             width=30,
-                            command=lambda: close_win(root))
+                            command=lambda: close_win(self,root))
         self.close.grid(row=0, column=2)
         self.minimize = Button(self.title_frame, text='', image=minimize,
 

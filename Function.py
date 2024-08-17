@@ -6,6 +6,7 @@ import sv_ttk  # type: ignore
 from tkinter import ttk, messagebox
 import math
 from PIL import Image, ImageTk
+from pygame import mixer
 
 not_full_screen=False
 sw_stop_flag=False
@@ -23,14 +24,18 @@ class Timer:
         self.stop_flag = False
 
     def count_down(self):
+        #create mixer
+        mixer.init()
+        mixer.music.load("Assets\\short-beep-countdown-81121.mp3")
+        mixer.music.set_volume(0.8)
+        if self.master.minutes.get() == '':
+            self.master.minutes.set("00")
+        elif self.master.second.get() == '':
+            self.master.second.set("00")
+        
         if self.master.minutes.get().isdigit() and self.master.second.get().isdigit():
             self.master.minute_ui.configure(state=tk.DISABLED)
             self.master.second_ui.configure(state=tk.DISABLED)
-
-            if self.master.minutes.get() == '':
-                self.master.minutes.set("00")
-            if self.master.second.get() == '':
-                self.master.second.set("00")
 
             for i in range((int(self.master.minutes.get())*60)+int(self.master.second.get())):
                 minutes = int(self.master.minutes.get())
@@ -46,6 +51,8 @@ class Timer:
                     self.master.second.set((f"0{str(seconds)}") if len(
                         str(seconds)) == 1 else str(seconds))
                     self.root.update_idletasks()
+                if int(self.master.second.get()) ==3 and int(self.master.minutes.get())==0:
+                    mixer.music.play()
                 time.sleep(1)
                 if self.stop_flag:
                     break
@@ -58,6 +65,8 @@ class Timer:
             self.master.minutes.set("00")
             self.master.second.set("00")
             messagebox.showerror('Error!', 'Please enter only number')
+        # add sound:
+        
 
     def start(self):
         if self.stop_flag:
@@ -167,10 +176,6 @@ def customize_style(window, theme):
     style.configure("TButton", font=("Roboto mono", 12))
     style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
 
-
-def close_win(root):
-    root.after(300, root.destroy())
-
 def maximize_win(root):
     global not_full_screen
     if not_full_screen:
@@ -235,7 +240,7 @@ def start_stopwatch(master, root):
     change_theme(master,root)
     if not master.is_moving:
         master.is_moving = True
-    threading.Thread(target=stopwatch, args=(master,root)).start()
+    threading.Thread(target=stopwatch, args=(master,root),daemon=True).start()
 def stop_stopwatch(master, root):
     master.is_moving = False
     global sw_stop_flag
@@ -264,3 +269,6 @@ def reset_sw(master):
         master.sw_centi.set("00")
         master.sw_second.set("00")
         master.sw_minute.set("00")
+def close_win(master, root):
+    stop_stopwatch(master,root)
+    root.after(300, root.destroy())
