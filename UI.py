@@ -31,6 +31,12 @@ class UI:
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=BOTH, expand=True)
         # custom title bar
+
+        logo_frame = Frame()
+        self.notebook.add(logo_frame, text="    ")
+        self.logo =Label(self.notebook, compound=LEFT)
+        self.logo.place(x=10, y=10)
+
         self.title_frame = Frame(self.notebook, relief="flat", border=0)
         self.title_frame.pack(side=TOP, anchor=E, pady=8)
         self.close = Button(self.title_frame, text='',
@@ -61,7 +67,8 @@ class UI:
         self.tab2 = Frame(self.notebook)
         self.notebook.add(self.tab2, text="Stop Watch",
                           compound=LEFT)
-
+        self.notebook.select(tab1)
+        self.notebook.tab(0, state="disabled")
         # first half frame
         tab1_firstFm = Frame(tab1)
         tab1_firstFm.pack(fill="both", expand=True)

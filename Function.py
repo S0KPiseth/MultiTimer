@@ -98,7 +98,7 @@ def reset_timer(master, root):
 def change_theme(master, root):
     global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, \
         stop_watch_white, timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
-        close, minimize,maximize
+        close, minimize,maximize, logo_img
 
     # identify tab id
     tab_index = int(master.notebook.index(master.notebook.select()))
@@ -120,9 +120,10 @@ def change_theme(master, root):
     reset = get_img("Assets\\reset.png", 20, 20)
     reset_white = get_img("Assets\\reset_white.png", 20, 20)
 
-
+    logo_img = get_img('Assets\\my_logo.png',25,25)
     # apply theme
     if master.theme_value.get():
+        color = '#2f2f2f'
         start_icon = get_img(img="Assets\\play_icon_white.png")
         stop_icon = get_img(img="Assets\\x.png")
 
@@ -130,17 +131,17 @@ def change_theme(master, root):
         minimize = get_img("Assets\\minus_white.png", 25, 25)
         maximize = get_img("Assets\\maximize-2_white.png", 25, 25)
 
-        master.close.config(activebackground="#2f2f2f", image=close)
-        master.minimize.config(activebackground="#2f2f2f",image=minimize)
-        master.maximize.config(activebackground="#2f2f2f",image=maximize)
+        master.close.config(activebackground=color, image=close)
+        master.minimize.config(activebackground=color,image=minimize)
+        master.maximize.config(activebackground=color,image=maximize)
 
-        
         sv_ttk.set_theme("dark")
-        color = '#2f2f2f'
+        
         # config title bar button
         master.close.config(bg=color)
         master.minimize.config(bg=color)
         master.maximize.config(bg=color)
+        master.logo.config(bg=color,image=logo_img)
         customize_style(root, master.theme_value.get())
         # config stopwatch buttons
         master.stop_watchBtn.config(image=start_icon)
@@ -150,23 +151,25 @@ def change_theme(master, root):
         if master.stop_flag:
             stop_icon = reset_white
 
-        if tab_index == 0:
+        if tab_index == 1:
             timer_icon = timer_icon_white
             stop_watch = stop_watch_notst
-        elif tab_index == 1:
+        elif tab_index == 2:
             stop_watch = stop_watch_white
             timer_icon = timer_notst
     else:
-        master.close.config(activebackground="#e7e7e7",image=close)
-        master.minimize.config(activebackground="#e7e7e7",image=minimize)
-        master.maximize.config(activebackground="#e7e7e7",image=maximize)
+        color = '#e7e7e7'
+        master.close.config(activebackground=color,image=close)
+        master.minimize.config(activebackground=color,image=minimize)
+        master.maximize.config(activebackground=color,image=maximize)
 
         sv_ttk.set_theme("light")
-        color = '#e7e7e7'
+        
         # config title bar button
         master.close.config(bg=color)
         master.minimize.config(bg=color)
         master.maximize.config(bg=color)
+        master.logo.config(bg=color, image=logo_img)
         customize_style(root, master.theme_value.get())
         start_icon = get_img(img="Assets\\play-button_724963.png")
         stop_icon = get_img(img="Assets\\pause _icon.png")
@@ -176,13 +179,13 @@ def change_theme(master, root):
             master.stop_watchBtn.config(image=pause_sp)
         if master.stop_flag:
             stop_icon = reset
-        if tab_index == 0:
+        if tab_index == 1:
             stop_watch = stop_watch_notst
-        elif tab_index == 1:
+        elif tab_index == 2:
             timer_icon = timer_notst
 
-    master.notebook.tab(0, image=timer_icon)
-    master.notebook.tab(1, image=stop_watch)
+    master.notebook.tab(1, image=timer_icon)
+    master.notebook.tab(2, image=stop_watch)
 
     master.start_button.configure(image=start_icon)
     master.stop_button.configure(
@@ -213,7 +216,6 @@ def customize_style(window, theme):
                   font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
     style.configure("TButton", font=("Roboto mono", 12))
     style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
-    #style.configure("TNotebook", tabposition='n')
 
 #enter window full screen function for custom maximize button
 def maximize_win(root):
