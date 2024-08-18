@@ -52,7 +52,7 @@ class UI:
                             activebackground="#e7e7e7",
                             border=0,
                             width=30,
-                            command=lambda: close_win(self, root))
+                            command=lambda: self.close_win(root))
         self.close.grid(row=0, column=2)
         self.minimize = Button(self.title_frame, text='', image=minimize,
 
@@ -147,11 +147,11 @@ class UI:
         control_frame = Frame(tab1_secondFm)
         control_frame.pack(side="bottom", anchor="w", padx=10, pady=20)
         # create Timer_object
-        timer_obj = Timer(self, root)
+        self.timer_obj = Timer(self, root)
 
         self.start_button = ttk.Button(
             control_frame, text="Start", width=15, compound=LEFT,
-            command=lambda: timer_obj.start(),
+            command=lambda: self.timer_obj.start(),
             padding=(1, 1)
         )
         self.start_button.grid(row=0, column=0)
@@ -159,7 +159,7 @@ class UI:
         self.stop_button = ttk.Button(
             control_frame, width=15, compound=LEFT,
             command=lambda: (
-                timer_obj.stop()) if not self.stop_flag else reset_timer(self, root),
+                self.timer_obj.stop()) if not self.stop_flag else reset_timer(self, root),
             padding=(1, 1)
         )
         self.stop_button.grid(row=0, column=1)
@@ -226,6 +226,10 @@ class UI:
         self.sw_centi.set("00")
         self.sw_second.set("00")
         self.sw_minute.set("00")
+    def close_win(self, root):
+        stop_stopwatch(self, root)
+        self.timer_obj.stop()
+        root.after(300, root.destroy())
 
 
 def main():

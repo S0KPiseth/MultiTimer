@@ -72,23 +72,27 @@ class Timer:
     def start(self):
         if not self.master.is_starting:
             self.master.is_starting = True
-        if self.master.stop_timer:
-            self.master.stop_timer = False
-        threading.Thread(target=self.count_down).start()
+            if self.master.stop_timer:
+                self.master.stop_timer = False
+            self.master.stop_flag = False
+            change_theme(self.master, self.root)
+            threading.Thread(target=self.count_down).start()
 
     def stop(self):
         if not self.master.stop_timer:
             self.master.stop_timer = True
-        if self.master.is_starting:
-            if not self.master.stop_flag:
-                self.master.stop_flag = True
-                change_theme(self.master, self.root)
+        if self.master.is_starting and not self.master.stop_flag:
+            self.master.stop_flag = True
+            change_theme(self.master, self.root)
 #option to reset timer to 00:00 is the stop button is press             
 def reset_timer(master, root):
     if master.stop_flag:
         master.stop_flag = False
         master.minutes.set("00")
         master.second.set("00")
+        
+        master.minute_ui.configure(state=tk.NORMAL)
+        master.second_ui.configure(state=tk.NORMAL)
         change_theme(master, root)
 
 def change_theme(master, root):
@@ -297,10 +301,6 @@ def reset_sw(master):
         master.sw_centi.set("00")
         master.sw_second.set("00")
         master.sw_minute.set("00")
-
-def close_win(master, root):
-    stop_stopwatch(master, root)
-    root.after(300, root.destroy())
 
 def move(event, window):
 
