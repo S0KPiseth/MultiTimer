@@ -1,4 +1,7 @@
-<h1 align="center" id="title">MultiTimer</h1>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/17d7019a-91ba-46b5-9d08-07f4dd9f1a7e" width="550px">
+</div>
+
 
 <p align="center"><img src="https://img.shields.io/github/license/S0KPiseth/MultiTimer?color=ligthgreen" alt="shields"><img src="https://img.shields.io/github/languages/top/s0kPiseth/MultiTimer?color=%234cc71e" alt="shields"><img src="https://img.shields.io/github/repo-size/s0kpiseth/MultiTimer" alt="shields"><img src="https://img.shields.io/github/commit-activity/w/s0kpiseth/MultiTimer" alt="shields"><img src="https://img.shields.io/github/stars/s0kpiseth/MultiTimer" alt="shields"><img src="https://img.shields.io/github/watchers/s0kpiseth/MultiTimer" alt="shields"></p>
 
