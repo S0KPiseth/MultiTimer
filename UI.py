@@ -19,9 +19,6 @@ class UI:
         self.sp_start_flag = False
         self.is_moving = False
         # Timer Tab_UI
-
-        #make the icon a global variable
-        global timer_icon, stop_watch, start_icon, stop_icon, close, minimize, maximize, reset, pause_sp
         
         self.minutes = StringVar()
         self.second = StringVar()
@@ -30,15 +27,6 @@ class UI:
         self.sw_centi = StringVar()
         self.theme_value = BooleanVar()
 
-        #get icon
-        timer_icon = get_img("Assets\\hourglass.png", 25, 25)
-        stop_watch = get_img("Assets\\stopwatch.png", 30, 30)
-        close = get_img("Assets\\pause _icon.png", 25, 25)
-        minimize = get_img("Assets\\minus.png", 25, 25)
-        maximize = get_img("Assets\\maximize-2.png", 25, 25)
-        reset = get_img("Assets\\reset.png", 20, 20)
-        pause_sp = get_img("Assets\\pause_sp.png", 20, 20)
-
         #create notebook
         self.notebook = ttk.Notebook(root)
         self.notebook.pack(fill=BOTH, expand=True)
@@ -46,37 +34,33 @@ class UI:
         self.title_frame = Frame(self.notebook, relief="flat", border=0)
         self.title_frame.pack(side=TOP, anchor=E, pady=8)
         self.close = Button(self.title_frame, text='',
-                            image=close,
-
+                            
                             relief='flat',
-                            activebackground="#e7e7e7",
                             border=0,
                             width=30,
                             command=lambda: self.close_win(root))
         self.close.grid(row=0, column=2)
-        self.minimize = Button(self.title_frame, text='', image=minimize,
+        self.minimize = Button(self.title_frame, text='',
 
                                relief='flat',
-                               activebackground="#e7e7e7",
                                border=0, width=30,
                                command=lambda: minimize_window(root))
         self.minimize.grid(row=0, column=0)
-        self.maximize = Button(self.title_frame, text='', image=maximize,
+        self.maximize = Button(self.title_frame, text='',
 
                                relief='flat',
-                               activebackground="#e7e7e7",
                                border=0, width=30,
                                command=lambda: maximize_win(root))
         self.maximize.grid(row=0, column=1)
 
         # create notebook tab
         tab1 = Frame(self.notebook)
-        self.notebook.add(tab1, text="Timer", image=timer_icon, compound=LEFT)
+        self.notebook.add(tab1, text="Timer", compound=LEFT)
 
         # create stopwatch tab
         self.tab2 = Frame(self.notebook)
         self.notebook.add(self.tab2, text="Stop Watch",
-                          image=stop_watch, compound=LEFT)
+                          compound=LEFT)
 
         # first half frame
         tab1_firstFm = Frame(tab1)
@@ -199,7 +183,7 @@ class UI:
 
         self.reset_button = ttk.Button(
             self.sp_control,
-            image=reset,
+            
             compound='center',
             width=15,
             command=lambda: reset_sw(self))

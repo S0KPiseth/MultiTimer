@@ -97,7 +97,8 @@ def reset_timer(master, root):
 
 def change_theme(master, root):
     global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, \
-        stop_watch_white, timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white
+        stop_watch_white, timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
+        close, minimize,maximize
 
     # identify tab id
     tab_index = int(master.notebook.index(master.notebook.select()))
@@ -110,15 +111,30 @@ def change_theme(master, root):
     timer_notst = get_img("Assets\\hourglass_notst.png", )
     stop_watch_notst = get_img("Assets\\stopwatch_notst.png", )
 
+    close = get_img("Assets\\pause _icon.png", 25, 25)
+    minimize = get_img("Assets\\minus.png", 25, 25)
+    maximize = get_img("Assets\\maximize-2.png", 25, 25)
+
     pause_sp = get_img("Assets\\pause_sp.png", 20, 20)
     pause_sp_white = get_img("Assets\\pause_sp_white.png", 20, 20)
     reset = get_img("Assets\\reset.png", 20, 20)
     reset_white = get_img("Assets\\reset_white.png", 20, 20)
 
+
     # apply theme
     if master.theme_value.get():
         start_icon = get_img(img="Assets\\play_icon_white.png")
         stop_icon = get_img(img="Assets\\x.png")
+
+        close = get_img("Assets\\x.png", 25, 25)
+        minimize = get_img("Assets\\minus_white.png", 25, 25)
+        maximize = get_img("Assets\\maximize-2_white.png", 25, 25)
+
+        master.close.config(activebackground="#2f2f2f", image=close)
+        master.minimize.config(activebackground="#2f2f2f",image=minimize)
+        master.maximize.config(activebackground="#2f2f2f",image=maximize)
+
+        
         sv_ttk.set_theme("dark")
         color = '#2f2f2f'
         # config title bar button
@@ -141,6 +157,10 @@ def change_theme(master, root):
             stop_watch = stop_watch_white
             timer_icon = timer_notst
     else:
+        master.close.config(activebackground="#e7e7e7",image=close)
+        master.minimize.config(activebackground="#e7e7e7",image=minimize)
+        master.maximize.config(activebackground="#e7e7e7",image=maximize)
+
         sv_ttk.set_theme("light")
         color = '#e7e7e7'
         # config title bar button
@@ -172,8 +192,6 @@ def change_theme(master, root):
 
 def customize_style(window, theme):
     style = ttk.Style(window)
-    style.map("TNotebook.Tab", font=[
-              ("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
     # remove dotted line around notebook tabs(https://stackoverflow.com/questions/23354303/removing-ttk-notebook-tab-dashed-line?rq=4)
     style.layout("Tab",
                  [('Notebook.tab', {'sticky': 'nswe', 'children':
@@ -191,9 +209,11 @@ def customize_style(window, theme):
                   font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
     else:
         style.map("TNotebook.Tab",  foreground=[
-                  ("selected", 'black'), ("!selected", '#8b8b8b')])
+                  ("selected", 'black'), ("!selected", '#8b8b8b')],
+                  font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
     style.configure("TButton", font=("Roboto mono", 12))
     style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
+    #style.configure("TNotebook", tabposition='n')
 
 #enter window full screen function for custom maximize button
 def maximize_win(root):
