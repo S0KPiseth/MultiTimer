@@ -317,12 +317,11 @@ def stopwatch(master, root):
         root.update_idletasks()
 
 
-def reset_sw(master):
-    global sw_stop_flag
-    if sw_stop_flag:
-        master.sw_centi.set("00")
-        master.sw_second.set("00")
-        master.sw_minute.set("00")
+def reset_sw(master,root):
+    stop_stopwatch(master, root)
+    master.sw_centi.set("00")
+    master.sw_second.set("00")
+    master.sw_minute.set("00")
 
 def move(event, window):
 

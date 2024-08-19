@@ -193,7 +193,7 @@ class UI:
             
             compound='center',
             width=15,
-            command=lambda: reset_sw(self))
+            command=lambda: reset_sw(self, root))
 
         # stop watch label
         stop_watch_frame = Frame(self.canvas)
