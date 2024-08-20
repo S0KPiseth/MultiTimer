@@ -224,9 +224,13 @@ class UI:
 
 
 def main():
+    # Reference: https://stackoverflow.com/questions/4066027/making-tkinter-windows-show-up-in-the-taskbar
     window = Tk()
+    root = Toplevel(window)    # add a taskbar icon.
     #remove title bar for custom title bar
     window.overrideredirect(True)
+
+    root.attributes("-alpha", 0.0)
 
     # move window without title bar
     window.bind('<Button-1>', lambda e: origin_cords(e, window))
@@ -238,7 +242,14 @@ def main():
     #apply change to buttons when theme change
     change_theme(ui, window)
 
-    window.mainloop()
+    # toplevel follows root taskbar events (minimize, restore)
+    def onRootIconify(event): window.withdraw()
+    root.bind("<Unmap>", onRootIconify)
+    def onRootDeiconify(event): window.deiconify()
+    root.bind("<Map>", onRootDeiconify)
+
+    window_ = Frame(master=window)
+    window_.mainloop()
 
 
 if __name__ == "__main__":
