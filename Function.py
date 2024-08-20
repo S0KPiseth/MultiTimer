@@ -44,7 +44,7 @@ class Timer:
                 seconds = int(self.master.second.get())
                 if seconds == 0:
                     minutes -= 1
-                    self.master.second.set("60")
+                    self.master.second.set("59")
                     self.master.minutes.set((f"0{str(minutes)}") if len(
                         str(minutes)) == 1 else str(minutes))
                     self.root.update_idletasks()
