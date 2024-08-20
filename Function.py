@@ -228,9 +228,10 @@ def maximize_win(root):
                       root.winfo_screenheight()}+0+0')
         not_full_screen = True
 
-#cannot minimize just yet
-def minimize_window(root):
-    messagebox.showwarning("Sorry!", "You cannot iconify the window")
+def minimize_window(root, minimize_helper):
+    # messagebox.showwarning("Sorry!", "You cannot iconify the window")
+    minimize_helper.iconify()
+    root.withdraw()
 
 
 def limit_digit(master, box, second=False):

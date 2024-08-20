@@ -7,7 +7,7 @@ from Function import *
 
 
 class UI:
-    def __init__(self, root):
+    def __init__(self, root, minimize_helper):
         root.title("Clock")
         root.geometry("900x450")
         self.root = root,
@@ -50,7 +50,7 @@ class UI:
 
                                relief='flat',
                                border=0, width=30,
-                               command=lambda: minimize_window(root))
+                               command=lambda: minimize_window(root, minimize_helper))
         self.minimize.grid(row=0, column=0)
         self.maximize = Button(self.title_frame, text='',
 
@@ -237,7 +237,7 @@ def main():
     window.bind('<B1-Motion>', lambda e: move(e, window))
 
     #add ui
-    ui = UI(window)
+    ui = UI(window, root)
 
     #apply change to buttons when theme change
     change_theme(ui, window)
