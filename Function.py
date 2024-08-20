@@ -98,7 +98,7 @@ def reset_timer(master, root):
 def change_theme(master, root):
     global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, \
         stop_watch_white, timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
-        close, minimize,maximize, logo_img
+        close, minimize,maximize, logo_img,un_maximize
 
     # identify tab id
     tab_index = int(master.notebook.index(master.notebook.select()))
@@ -114,6 +114,7 @@ def change_theme(master, root):
     close = get_img("Assets\\pause _icon.png", 25, 25)
     minimize = get_img("Assets\\minus.png", 25, 25)
     maximize = get_img("Assets\\maximize-2.png", 25, 25)
+    un_maximize = get_img("Assets\\un_maximize.png",25,25)
 
     pause_sp = get_img("Assets\\pause_sp.png", 20, 20)
     pause_sp_white = get_img("Assets\\pause_sp_white.png", 20, 20)
@@ -130,10 +131,13 @@ def change_theme(master, root):
         close = get_img("Assets\\x.png", 25, 25)
         minimize = get_img("Assets\\minus_white.png", 25, 25)
         maximize = get_img("Assets\\maximize-2_white.png", 25, 25)
+        un_maximize = get_img("Assets\\un_maximize_white.png",25,25)
 
         master.close.config(activebackground=color, image=close)
         master.minimize.config(activebackground=color,image=minimize)
         master.maximize.config(activebackground=color,image=maximize)
+        if not_full_screen:
+            master.maximize.config(image=un_maximize)
 
         sv_ttk.set_theme("dark")
         
@@ -162,7 +166,8 @@ def change_theme(master, root):
         master.close.config(activebackground=color,image=close)
         master.minimize.config(activebackground=color,image=minimize)
         master.maximize.config(activebackground=color,image=maximize)
-
+        if not_full_screen:
+            master.maximize.config(image=un_maximize)
         sv_ttk.set_theme("light")
         
         # config title bar button
@@ -218,7 +223,7 @@ def customize_style(window, theme):
     style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
 
 #enter window full screen function for custom maximize button
-def maximize_win(root):
+def maximize_win(master,root):
     global not_full_screen
     if not_full_screen:
         root.geometry('900x450')
@@ -227,6 +232,7 @@ def maximize_win(root):
         root.geometry(f'{root.winfo_screenwidth()}x{
                       root.winfo_screenheight()}+0+0')
         not_full_screen = True
+    change_theme(master,root)
 
 def minimize_window(root, minimize_helper):
     # messagebox.showwarning("Sorry!", "You cannot iconify the window")
@@ -318,12 +324,11 @@ def stopwatch(master, root):
         root.update_idletasks()
 
 
-def reset_sw(master):
-    global sw_stop_flag
-    if sw_stop_flag:
-        master.sw_centi.set("00")
-        master.sw_second.set("00")
-        master.sw_minute.set("00")
+def reset_sw(master,root):
+    stop_stopwatch(master, root)
+    master.sw_centi.set("00")
+    master.sw_second.set("00")
+    master.sw_minute.set("00")
 
 def move(event, window):
 

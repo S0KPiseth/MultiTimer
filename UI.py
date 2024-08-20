@@ -56,7 +56,7 @@ class UI:
 
                                relief='flat',
                                border=0, width=30,
-                               command=lambda: maximize_win(root))
+                               command=lambda: maximize_win(self,root))
         self.maximize.grid(row=0, column=1)
 
         # create notebook tab
@@ -193,7 +193,7 @@ class UI:
             
             compound='center',
             width=15,
-            command=lambda: reset_sw(self))
+            command=lambda: reset_sw(self, root))
 
         # stop watch label
         stop_watch_frame = Frame(self.canvas)
