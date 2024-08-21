@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from Function import *
+from tkextrafont import Font
 
 
 # create interface
@@ -18,6 +19,10 @@ class UI:
         self.stop_flag = False
         self.sp_start_flag = False
         self.is_moving = False
+
+        # define font
+        self.roboto_mono = Font(file="Assets\\RobotoMono-Regular.ttf", family="Roboto Mono")
+
         # Timer Tab_UI
         
         self.minutes = StringVar()
