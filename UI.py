@@ -226,7 +226,9 @@ class UI:
 def main():
     # Reference: https://stackoverflow.com/questions/4066027/making-tkinter-windows-show-up-in-the-taskbar
     window = Tk()
-    minimize_helper = Toplevel(window)    # add a taskbar icon.
+    minimize_helper = Toplevel(window)    # add a taskbar icon
+    minimize_helper.iconbitmap("Assets\\my_logo.ico")
+    minimize_helper.title("Multi Timer")
     #remove title bar for custom title bar
     window.overrideredirect(True)
 
