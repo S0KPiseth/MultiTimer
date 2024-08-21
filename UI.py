@@ -26,6 +26,12 @@ class UI:
         self.sw_second = StringVar()
         self.sw_centi = StringVar()
         self.theme_value = BooleanVar()
+        
+        self.lap_1=StringVar()
+        self.lap_2=StringVar()
+        self.lap_3=StringVar()
+        self.lap_4=StringVar()
+        self.lap_5=StringVar()
 
         #create notebook
         self.notebook = ttk.Notebook(root)
@@ -157,7 +163,7 @@ class UI:
         self.notebook.bind('<<NotebookTabChanged>>',
                            lambda e: change_theme(self, root))
 
-        # Timer Stopwatch Tab_UI
+        #Stopwatch Tab_UI
         self.canvas = Canvas(self.tab2, width=900, height=350)
         self.canvas.pack(expand=True)
 
@@ -193,7 +199,7 @@ class UI:
             
             compound='center',
             width=15,
-            command=lambda: reset_sw(self, root))
+            )
 
         # stop watch label
         stop_watch_frame = Frame(self.canvas)
@@ -217,6 +223,46 @@ class UI:
         self.sw_centi.set("00")
         self.sw_second.set("00")
         self.sw_minute.set("00")
+        #lap frame:
+        label_font = ("Roboto mono", 12)
+        self.lap_frame = Frame(self.canvas)
+        self.lap_frame.place(x=50,y=10)
+        #lap name
+        self.lap_name1 =self.lap_name =Label(self.lap_frame,text="Lap 1 :",
+                 font=label_font)
+        self.lap_name2 =Label(self.lap_frame,text="Lap 2 :",
+                 font=label_font)
+        self.lap_name3 =Label(self.lap_frame,text="Lap 3 :",
+                 font=label_font)
+        self.lap_name4 =Label(self.lap_frame,text="Lap 4 :",
+                 font=label_font)
+        self.lap_name5 =Label(self.lap_frame,text="Lap 5 :",
+                 font=label_font)
+        #lap duration
+        
+        self.lap1=Label(self.lap_frame,font=label_font, textvariable=self.lap_1)
+        self.lap2=Label(self.lap_frame,font=label_font, textvariable=self.lap_2)
+        self.lap3=Label(self.lap_frame,font=label_font, textvariable=self.lap_3)
+        self.lap4=Label(self.lap_frame,font=label_font, textvariable=self.lap_4)
+        self.lap5=Label(self.lap_frame,font=label_font, textvariable=self.lap_5)
+        
+        self.lap_spt1=Label(self.lap_frame,
+                 text="―――――――――――――――――",
+                 font=label_font)
+        self.lap_spt2=Label(self.lap_frame,
+                 text="―――――――――――――――――",
+                 font=label_font)
+        self.lap_spt3=Label(self.lap_frame,
+                 text="―――――――――――――――――",
+                 font=label_font)
+        self.lap_spt4=Label(self.lap_frame,
+                 text="―――――――――――――――――",
+                 font=label_font)
+        self.lap_spt5=Label(self.lap_frame,
+                 text="―――――――――――――――――",
+                 font=label_font)
+                 
+        
     def close_win(self, root):
         stop_stopwatch(self, root)
         self.timer_obj.stop()

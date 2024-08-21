@@ -1,4 +1,5 @@
 # timer watch function
+import multiprocessing.process
 import time
 import tkinter as tk
 import threading
@@ -8,9 +9,21 @@ import math
 from PIL import Image, ImageTk
 from pygame import mixer  # type: ignore
 
+
 #set up flags
 not_full_screen = False
 sw_stop_flag = False
+#set up lap count
+lap_count = 0
+function_call = 0
+
+new_lap=False
+lap_variable =[]
+
+#lap default variable
+minute_lap = 0
+second_lap = 0
+centi_lap = 0
 
 #get photoimage
 def get_img(img, width=20, height=20):
@@ -195,7 +208,10 @@ def change_theme(master, root):
     master.start_button.configure(image=start_icon)
     master.stop_button.configure(
         image=stop_icon, text="Reset"if master.stop_flag else "Stop")
-    master.reset_button.configure(image=reset)
+    if sw_stop_flag:
+        master.reset_button.configure(image=reset, text = "", command = lambda: reset_sw(master, root))
+    else:
+        master.reset_button.configure(text="Add Lap", command= lambda: add_lap(master, root),image="")
 
 
 def customize_style(window, theme):
@@ -280,11 +296,15 @@ def move_circle(master):
         master.canvas.after(20, lambda: move_circle(master))
 
 def start_stopwatch(master, root):
-    global sw_stop_flag
+    global sw_stop_flag, new_lap, lap_variable
+    #prevent from set the default lap variable to 0 when after start the stopwatch again
+    new_lap=False
+
     if not master.sp_start_flag:
         master.sp_start_flag = True
     if sw_stop_flag:
         sw_stop_flag = False
+        threading.Thread(target=lap_value, args=(lap_count, lap_variable, root,master), daemon=True).start()
 
     master.reset_button.grid(row=0, column=1)
     master.stop_watchBtn.config(width=15)
@@ -328,6 +348,26 @@ def reset_sw(master,root):
     master.sw_centi.set("00")
     master.sw_second.set("00")
     master.sw_minute.set("00")
+    master.lap_frame.place_forget()
+def add_lap(master, root):
+    global lap_count, new_lap,lap_variable
+
+    new_lap = True
+
+    lap_labels=[master.lap1,master.lap2,master.lap3,master.lap4,master.lap5]
+    lap_name = [master.lap_name1,master.lap_name2,master.lap_name3,master.lap_name4,master.lap_name5]
+    lap_separator =[master.lap_spt1,master.lap_spt2,master.lap_spt3,master.lap_spt4,master.lap_spt5]
+    lap_variable= [master.lap_1,master.lap_2,master.lap_3,master.lap_4,master.lap_5]
+    if lap_count<5:
+        lap_labels[lap_count].grid(row = 10-(2*lap_count), column = 1)
+        lap_name[lap_count].grid(row = 10-(2*lap_count), column = 0)
+
+    if lap_count<4:
+        lap_separator[lap_count].grid(row=9-(2*lap_count), column = 0, columnspan=2)
+    lap_count+=1
+    threading.Thread(target=display_rs, args=(lap_variable, sw_stop_flag, master,root), daemon=True).start()
+    
+    
 
 def move(event, window):
 
@@ -338,3 +378,42 @@ def move(event, window):
 def origin_cords(event, window):
     window.startX = event.x
     window.startY = event.y
+
+def display_rs(variable, flag, master,root):
+    global lap_count
+    if not(lap_count>5):
+        while lap_count==1:
+            variable[0].set(f"{master.sw_minute.get()}:{master.sw_second.get()}:{master.sw_centi.get()}")
+        if lap_count==2:
+            lap_value(2, variable,root,master)
+        if lap_count==3:
+            lap_value(3, variable,root, master)
+        if lap_count==4:
+            lap_value(4, variable,root, master)
+        if lap_count==5:
+            lap_value(5,variable,root, master)
+    else:
+        messagebox.showwarning("Warning!", "You can only add five labs.")
+
+        
+def lap_value(lap_iden, variable, root,master):
+    global lap_count,sw_stop_flag,minute_lap,second_lap,centi_lap
+    if new_lap:
+        minute_lap = int(master.sw_minute.get())
+        second_lap = int(master.sw_second.get())
+        centi_lap = int(master.sw_centi.get())
+        
+    while lap_count==lap_iden:
+        if not sw_stop_flag:
+            minute=abs(int(master.sw_minute.get())-minute_lap)
+            second = abs(int(master.sw_second.get())-second_lap)
+            centi=abs(int(master.sw_centi.get())-centi_lap)
+            display_minute = str(minute) if len(str(minute)) ==2 else f"0{minute}"
+            display_second = str(second) if len(str(second)) ==2 else f"0{second}"
+            display_centi = str(centi) if len(str(centi)) ==2 else f"0{centi}"
+            variable[lap_count-1].set(f"{display_minute}:{display_second}:{display_centi}")
+            time.sleep(0.01)
+            root.update_idletasks()
+        else:
+            break
+        
