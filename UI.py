@@ -1,13 +1,14 @@
 from tkinter import *
 from tkinter import ttk
 from Function import *
+from tkextrafont import Font
 
 
 # create interface
 
 
 class UI:
-    def __init__(self, root):
+    def __init__(self, root, minimize_helper):
         root.title("Clock")
         root.geometry("900x450")
         self.root = root,
@@ -18,6 +19,10 @@ class UI:
         self.stop_flag = False
         self.sp_start_flag = False
         self.is_moving = False
+
+        # define font
+        self.roboto_mono = Font(file="Assets\\RobotoMono-Regular.ttf", family="Roboto Mono")
+
         # Timer Tab_UI
         
         self.minutes = StringVar()
@@ -56,7 +61,7 @@ class UI:
 
                                relief='flat',
                                border=0, width=30,
-                               command=lambda: minimize_window(root))
+                               command=lambda: minimize_window(root, minimize_helper))
         self.minimize.grid(row=0, column=0)
         self.maximize = Button(self.title_frame, text='',
 
@@ -270,21 +275,34 @@ class UI:
 
 
 def main():
+    # Reference: https://stackoverflow.com/questions/4066027/making-tkinter-windows-show-up-in-the-taskbar
     window = Tk()
+    minimize_helper = Toplevel(window)    # add a taskbar icon
+    minimize_helper.iconbitmap("Assets\\my_logo.ico")
+    minimize_helper.title("Multi Timer")
     #remove title bar for custom title bar
     window.overrideredirect(True)
+
+    minimize_helper.attributes("-alpha", 0.0)
 
     # move window without title bar
     window.bind('<Button-1>', lambda e: origin_cords(e, window))
     window.bind('<B1-Motion>', lambda e: move(e, window))
 
     #add ui
-    ui = UI(window)
+    ui = UI(window, minimize_helper)
 
     #apply change to buttons when theme change
     change_theme(ui, window)
 
-    window.mainloop()
+    # toplevel follows root taskbar events (minimize, restore)
+    def onRootIconify(event): window.withdraw()
+    minimize_helper.bind("<Unmap>", onRootIconify)
+    def onRootDeiconify(event): window.deiconify()
+    minimize_helper.bind("<Map>", onRootDeiconify)
+
+    window_ = Frame(master=window)
+    window_.mainloop()
 
 
 if __name__ == "__main__":
