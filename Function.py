@@ -20,6 +20,7 @@ function_call = 0
 new_lap=False
 lap_variable =[]
 
+
 #lap default variable
 minute_lap = 0
 second_lap = 0
@@ -297,7 +298,7 @@ def move_circle(master):
         master.canvas.after(20, lambda: move_circle(master))
 
 def start_stopwatch(master, root):
-    global sw_stop_flag, new_lap, lap_variable
+    global sw_stop_flag
     #prevent from set the default lap variable to 0 when after start the stopwatch again
     new_lap=False
 
@@ -305,7 +306,7 @@ def start_stopwatch(master, root):
         master.sp_start_flag = True
     if sw_stop_flag:
         sw_stop_flag = False
-        threading.Thread(target=lap_value, args=(lap_count, lap_variable, root,master), daemon=True).start()
+        threading.Thread(target=lap_value, args=(lap_count, root,master), daemon=True).start()
 
     master.reset_button.grid(row=0, column=1)
     master.stop_watchBtn.config(width=15)
@@ -332,8 +333,7 @@ def stopwatch(master, root):
     while not sw_stop_flag:
         master.sw_centi.set(("0"+str(int(master.sw_centi.get())+1))if len(
             str(int(master.sw_centi.get())+1)) == 1 else str(int(master.sw_centi.get())+1))
-        time.sleep(0.014)
-        if int(master.sw_centi.get()) == 60:
+        if int(master.sw_centi.get()) == 100:
             master.sw_second.set(("0"+str(int(master.sw_second.get())+1))if len(
                 str(int(master.sw_second.get())+1)) == 1 else str(int(master.sw_second.get())+1))
             master.sw_centi.set("00")
@@ -342,18 +342,28 @@ def stopwatch(master, root):
                 master.sw_minute.set(("0"+str(int(master.sw_minute.get())+1))if len(
                     str(int(master.sw_minute.get())+1)) == 1 else str(int(master.sw_minute.get())+1))
         root.update_idletasks()
+        time.sleep(0.0075)
 
 
 def reset_sw(master,root):
+    global lap_count
     stop_stopwatch(master, root)
     master.sw_centi.set("00")
     master.sw_second.set("00")
     master.sw_minute.set("00")
-    master.lap_frame.place_forget()
+    if lap_count!=0:
+        for i in range(len(lap_name)):
+            lap_name[i].grid_forget()
+            lap_labels[i].grid_forget()
+            lap_separator[i].grid_forget()
+            lap_variable[i].set('')
+        lap_count = 0
+        
 def add_lap(master, root):
-    global lap_count, new_lap,lap_variable
+    global lap_count,lap_variable, lap_name, lap_separator,lap_labels, new_lap
 
-    new_lap = True
+    new_lap=True
+    label_font = ("Roboto mono", 15, 'bold')
 
     lap_labels=[master.lap1,master.lap2,master.lap3,master.lap4,master.lap5]
     lap_name = [master.lap_name1,master.lap_name2,master.lap_name3,master.lap_name4,master.lap_name5]
@@ -363,47 +373,47 @@ def add_lap(master, root):
         lap_labels[lap_count].grid(row = 10-(2*lap_count), column = 1)
         lap_name[lap_count].grid(row = 10-(2*lap_count), column = 0)
 
-    if lap_count<4:
-        lap_separator[lap_count].grid(row=9-(2*lap_count), column = 0, columnspan=2)
-    lap_count+=1
-    threading.Thread(target=display_rs, args=(lap_variable, sw_stop_flag, master,root), daemon=True).start()
-    
+        lap_labels[lap_count].config(font= label_font)
+        lap_name[lap_count].config(font=label_font)
+
+    if 0<lap_count<5:
+        lap_separator[lap_count].grid(row=11-(2*lap_count), column = 0, columnspan=2)
+    if lap_count<5:
+        lap_count+=1
+        threading.Thread(target=display_rs, args=(master,root), daemon=True).start()
+    else:
+        messagebox.showwarning("Warning!", "You can only add five laps.")
     
 
 def move(event, window):
-
-        x = window.winfo_x()-window.startX + event.x
-        y = window.winfo_y()-window.startY + event.y
-        window.geometry(f'+{x}+{y}')
+    x = window.winfo_x()-window.startX + event.x
+    y = window.winfo_y()-window.startY + event.y
+    window.geometry(f'+{x}+{y}')
 
 def origin_cords(event, window):
     window.startX = event.x
     window.startY = event.y
 
-def display_rs(variable, flag, master,root):
-    global lap_count
-    if not(lap_count>5):
-        while lap_count==1:
-            variable[0].set(f"{master.sw_minute.get()}:{master.sw_second.get()}:{master.sw_centi.get()}")
-        if lap_count==2:
-            lap_value(2, variable,root,master)
-        if lap_count==3:
-            lap_value(3, variable,root, master)
-        if lap_count==4:
-            lap_value(4, variable,root, master)
-        if lap_count==5:
-            lap_value(5,variable,root, master)
-    else:
-        messagebox.showwarning("Warning!", "You can only add five labs.")
-
+def display_rs(master,root):
+    while lap_count==1:
+        lap_variable[0].set(f"{master.sw_minute.get()}:{master.sw_second.get()}:{master.sw_centi.get()}")
+    if lap_count==2:
+        lap_name[0].config(font =("Roboto mono", 12))
+        lap_labels[0].config(font =("Roboto mono", 12))
+        lap_value(2,root,master)
+    if lap_count==3:
+        lap_value(3,root, master)
+    if lap_count==4:
+        lap_value(4,root, master)
+    if lap_count==5:
+        lap_value(5,root, master)
         
-def lap_value(lap_iden, variable, root,master):
+def lap_value(lap_iden,root,master):
     global lap_count,sw_stop_flag,minute_lap,second_lap,centi_lap
     if new_lap:
         minute_lap = int(master.sw_minute.get())
         second_lap = int(master.sw_second.get())
         centi_lap = int(master.sw_centi.get())
-        
     while lap_count==lap_iden:
         if not sw_stop_flag:
             minute=abs(int(master.sw_minute.get())-minute_lap)
@@ -412,9 +422,12 @@ def lap_value(lap_iden, variable, root,master):
             display_minute = str(minute) if len(str(minute)) ==2 else f"0{minute}"
             display_second = str(second) if len(str(second)) ==2 else f"0{second}"
             display_centi = str(centi) if len(str(centi)) ==2 else f"0{centi}"
-            variable[lap_count-1].set(f"{display_minute}:{display_second}:{display_centi}")
+            lap_variable[lap_count-1].set(f"{display_minute}:{display_second}:{display_centi}")
             time.sleep(0.01)
             root.update_idletasks()
         else:
             break
+    if not sw_stop_flag:
+        lap_name[lap_iden-1].config(font =("Roboto mono", 12))
+        lap_labels[lap_iden-1].config(font =("Roboto mono", 12))
         

@@ -11,7 +11,7 @@ class UI:
     def __init__(self, root, minimize_helper):
         root.title("Clock")
         root.geometry("900x450")
-        self.root = root,
+        self.root = root
         
         #define flag
         self.is_starting = False
@@ -21,7 +21,8 @@ class UI:
         self.is_moving = False
 
         # define font
-        self.roboto_mono = Font(file="Assets\\RobotoMono-Regular.ttf", family="Roboto Mono")
+        # seem not to work('TclError' object has no attribute 'message')
+        #self.roboto_mono = Font(file="Assets\\RobotoMono-Regular.ttf", family="Roboto Mono")
 
         # Timer Tab_UI
         
@@ -218,55 +219,50 @@ class UI:
         self.second_label.grid(row=0, column=2)
 
         self.centisecond = Label(stop_watch_frame, font=(
-            "Roboto mono", 35), textvariable=self.sw_centi)
+            "Roboto mono", 25), textvariable=self.sw_centi)
         self.centisecond.grid(row=0, column=4)
         # insert (:)
-        for i in range(2):
-            Label(stop_watch_frame, text=":", font=(
-                "Roboto mono", 35)).grid(row=0, column=(i*2)+1)
+        Label(stop_watch_frame, text=":", font=(
+            "Roboto mono", 35)).grid(row=0, column=1)
+        Label(stop_watch_frame, text=".", font=(
+            "Roboto mono", 35)).grid(row=0, column=3)
+            
         #set the initial value
         self.sw_centi.set("00")
         self.sw_second.set("00")
         self.sw_minute.set("00")
         #lap frame:
-        label_font = ("Roboto mono", 12)
         self.lap_frame = Frame(self.canvas)
-        self.lap_frame.place(x=50,y=10)
+        self.lap_frame.place(x=50,y=40)
         #lap name
-        self.lap_name1 =self.lap_name =Label(self.lap_frame,text="Lap 1 :",
-                 font=label_font)
-        self.lap_name2 =Label(self.lap_frame,text="Lap 2 :",
-                 font=label_font)
-        self.lap_name3 =Label(self.lap_frame,text="Lap 3 :",
-                 font=label_font)
-        self.lap_name4 =Label(self.lap_frame,text="Lap 4 :",
-                 font=label_font)
-        self.lap_name5 =Label(self.lap_frame,text="Lap 5 :",
-                 font=label_font)
+        self.lap_name1 =self.lap_name =Label(self.lap_frame,text="Lap 1 :")
+        self.lap_name2 =Label(self.lap_frame,text="Lap 2 :")
+        self.lap_name3 =Label(self.lap_frame,text="Lap 3 :")
+        self.lap_name4 =Label(self.lap_frame,text="Lap 4 :")
+        self.lap_name5 =Label(self.lap_frame,text="Lap 5 :")
         #lap duration
         
-        self.lap1=Label(self.lap_frame,font=label_font, textvariable=self.lap_1)
-        self.lap2=Label(self.lap_frame,font=label_font, textvariable=self.lap_2)
-        self.lap3=Label(self.lap_frame,font=label_font, textvariable=self.lap_3)
-        self.lap4=Label(self.lap_frame,font=label_font, textvariable=self.lap_4)
-        self.lap5=Label(self.lap_frame,font=label_font, textvariable=self.lap_5)
+        self.lap1=Label(self.lap_frame,textvariable=self.lap_1)
+        self.lap2=Label(self.lap_frame,textvariable=self.lap_2)
+        self.lap3=Label(self.lap_frame,textvariable=self.lap_3)
+        self.lap4=Label(self.lap_frame,textvariable=self.lap_4)
+        self.lap5=Label(self.lap_frame,textvariable=self.lap_5)
         
         self.lap_spt1=Label(self.lap_frame,
-                 text="―――――――――――――――――",
-                 font=label_font)
+                 text="────────────",
+                 font=("Roboto mono", 12))
         self.lap_spt2=Label(self.lap_frame,
-                 text="―――――――――――――――――",
-                 font=label_font)
+                 text="────────────",
+                 font=("Roboto mono", 12))
         self.lap_spt3=Label(self.lap_frame,
-                 text="―――――――――――――――――",
-                 font=label_font)
+                 text="────────────",
+                 font=("Roboto mono", 12))
         self.lap_spt4=Label(self.lap_frame,
-                 text="―――――――――――――――――",
-                 font=label_font)
+                 text="────────────",
+                 font=("Roboto mono", 12))
         self.lap_spt5=Label(self.lap_frame,
-                 text="―――――――――――――――――",
-                 font=label_font)
-                 
+                 text="────────────",
+                 font=("Roboto mono", 12))
         
     def close_win(self, root):
         stop_stopwatch(self, root)
