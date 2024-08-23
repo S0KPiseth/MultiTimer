@@ -1,5 +1,3 @@
-# timer watch function
-import multiprocessing.process
 import time
 import tkinter as tk
 import threading
@@ -8,6 +6,7 @@ from tkinter import ttk, messagebox
 import math
 from PIL import Image, ImageTk
 from pygame import mixer  # type: ignore
+import pyglet
 
 
 #set up flags
@@ -17,13 +16,11 @@ sw_stop_flag = False
 lap_count = 0
 function_call = 0
 
-new_lap=False
-lap_variable =[]
-
-#lap default variable
-minute_lap = 0
-second_lap = 0
-centi_lap = 0
+#add font
+#https://stackoverflow.com/questions/75999061/pyglet-working-only-with-installed-fonts
+pyglet.options['win32_gdi_font'] = True
+pyglet.font.add_file("Assets\\RobotoMono-Regular.ttf")
+pyglet.font.add_file("Assets\\RobotoMono-Bold.ttf")
 
 #get photoimage
 def get_img(img, width=20, height=20):
@@ -109,20 +106,15 @@ def reset_timer(master, root):
         change_theme(master, root)
 
 def change_theme(master, root):
-    global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, \
-        stop_watch_white, timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
-        close, minimize,maximize, logo_img,un_maximize
+    global start_icon, stop_icon,timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
+        close, minimize,maximize, logo_img,un_maximize, timer_icon_st,stop_watch_st
 
     # identify tab id
     tab_index = int(master.notebook.index(master.notebook.select()))
 
     # get icon as photoimage
-    timer_icon_white = get_img("Assets\\hourglass_white.png", )
-    stop_watch_white = get_img("Assets\\stopwatch_white.png", )
-    timer_icon = get_img("Assets\\hourglass.png", )
-    stop_watch = get_img("Assets\\stopwatch.png", )
-    timer_notst = get_img("Assets\\hourglass_notst.png", )
-    stop_watch_notst = get_img("Assets\\stopwatch_notst.png", )
+    timer_notst = get_img("Assets\\hourglass_notst.png")
+    stop_watch_notst = get_img("Assets\\stopwatch_notst.png")
 
     close = get_img("Assets\\pause _icon.png", 25, 25)
     minimize = get_img("Assets\\minus.png", 25, 25)
@@ -133,6 +125,11 @@ def change_theme(master, root):
     pause_sp_white = get_img("Assets\\pause_sp_white.png", 20, 20)
     reset = get_img("Assets\\reset.png", 20, 20)
     reset_white = get_img("Assets\\reset_white.png", 20, 20)
+
+    #fill icon
+    timer_icon_st= get_img("Assets\\hourglass_st.png")
+    stop_watch_st=get_img("Assets\\stopwatch_st.png")
+
 
     logo_img = get_img('Assets\\my_logo.png',25,25)
     # apply theme
@@ -145,6 +142,9 @@ def change_theme(master, root):
         minimize = get_img("Assets\\minus_white.png", 25, 25)
         maximize = get_img("Assets\\maximize-2_white.png", 25, 25)
         un_maximize = get_img("Assets\\un_maximize_white.png",25,25)
+
+        timer_icon_st=get_img("Assets\\hourglass_st_white.png")
+        stop_watch_st=get_img("Assets\\stopwatch_st_white.png")
 
         master.close.config(activebackground=color, image=close)
         master.minimize.config(activebackground=color,image=minimize)
@@ -169,11 +169,9 @@ def change_theme(master, root):
             stop_icon = reset_white
 
         if tab_index == 1:
-            timer_icon = timer_icon_white
-            stop_watch = stop_watch_notst
+            stop_watch_st = stop_watch_notst
         elif tab_index == 2:
-            stop_watch = stop_watch_white
-            timer_icon = timer_notst
+            timer_icon_st = timer_notst
     else:
         color = '#e7e7e7'
         master.close.config(activebackground=color,image=close)
@@ -198,12 +196,12 @@ def change_theme(master, root):
         if master.stop_flag:
             stop_icon = reset
         if tab_index == 1:
-            stop_watch = stop_watch_notst
+            stop_watch_st = stop_watch_notst
         elif tab_index == 2:
-            timer_icon = timer_notst
+            timer_icon_st = timer_notst
 
-    master.notebook.tab(1, image=timer_icon)
-    master.notebook.tab(2, image=stop_watch)
+    master.notebook.tab(1, image=timer_icon_st)
+    master.notebook.tab(2, image=stop_watch_st)
 
     master.start_button.configure(image=start_icon)
     master.stop_button.configure(
@@ -211,7 +209,7 @@ def change_theme(master, root):
     if sw_stop_flag:
         master.reset_button.configure(image=reset, text = "", command = lambda: reset_sw(master, root))
     else:
-        master.reset_button.configure(text="Add Lap", command= lambda: add_lap(master, root),image="")
+        master.reset_button.configure(text="Add Lap", command= lambda: add_lap(master),image="")
 
 
 def customize_style(window, theme):
@@ -230,13 +228,13 @@ def customize_style(window, theme):
     
     if theme:
         style.map("TNotebook.Tab",  foreground=[("selected", 'white'), ("!selected", '#8b8b8b')],
-                  font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
+                  font=[("selected", ("Roboto Mono", 15, "bold")), ("!selected", ("Roboto Mono", 15))])
     else:
         style.map("TNotebook.Tab",  foreground=[
                   ("selected", 'black'), ("!selected", '#8b8b8b')],
-                  font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
-    style.configure("TButton", font=("Roboto mono", 12))
-    style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
+                  font=[("selected", ("Roboto Mono", 15, "bold")), ("!selected", ("Roboto Mono", 15))])
+    style.configure("TButton", font=("Roboto Mono", 12))
+    style.configure("Switch.TCheckbutton", font=("Roboto Mono", 12))
 
 #enter window full screen function for custom maximize button
 def maximize_win(master,root):
@@ -297,23 +295,20 @@ def move_circle(master):
         master.canvas.after(20, lambda: move_circle(master))
 
 def start_stopwatch(master, root):
-    global sw_stop_flag, new_lap, lap_variable
-    #prevent from set the default lap variable to 0 when after start the stopwatch again
-    new_lap=False
+    global sw_stop_flag,StopWatch
 
     if not master.sp_start_flag:
         master.sp_start_flag = True
     if sw_stop_flag:
         sw_stop_flag = False
-        threading.Thread(target=lap_value, args=(lap_count, lap_variable, root,master), daemon=True).start()
-
     master.reset_button.grid(row=0, column=1)
     master.stop_watchBtn.config(width=15)
     change_theme(master, root)
     if not master.is_moving:
         master.is_moving = True
-    threading.Thread(target=stopwatch, args=(
-        master, root), daemon=True).start()
+    if lap_count<1:
+        StopWatch = SW(master)
+    threading.Thread(target=StopWatch.stopwatch, daemon=True).start()
 
 
 def stop_stopwatch(master, root):
@@ -326,95 +321,103 @@ def stop_stopwatch(master, root):
     change_theme(master, root)
 
 
-def stopwatch(master, root):
+class SW:
+    def __init__(self, master):
+        self.master = master
+        self.root = master.root
+        self.centi_sw = 0
+        self.las_centi = 0
+        self.minute = 0
+        self.second = 0
+        self.lap_count = 0  # Initialize lap count to 0
 
-    move_circle(master)
-    while not sw_stop_flag:
-        master.sw_centi.set(("0"+str(int(master.sw_centi.get())+1))if len(
-            str(int(master.sw_centi.get())+1)) == 1 else str(int(master.sw_centi.get())+1))
-        time.sleep(0.014)
-        if int(master.sw_centi.get()) == 60:
-            master.sw_second.set(("0"+str(int(master.sw_second.get())+1))if len(
-                str(int(master.sw_second.get())+1)) == 1 else str(int(master.sw_second.get())+1))
-            master.sw_centi.set("00")
-            if int(master.sw_second.get()) == 60:
-                master.sw_second.set("00")
-                master.sw_minute.set(("0"+str(int(master.sw_minute.get())+1))if len(
-                    str(int(master.sw_minute.get())+1)) == 1 else str(int(master.sw_minute.get())+1))
-        root.update_idletasks()
+    def stopwatch(self):
+        while not sw_stop_flag:
+            self.master.sw_centi.set(("0" + str(self.centi_sw % 100)) if len(str(self.centi_sw % 100)) == 1 else str(self.centi_sw % 100))
+            if int(self.master.sw_centi.get()) == 99:
+                self.master.sw_second.set(("0" + str(int(self.master.sw_second.get()) + 1)) if len(
+                    str(int(self.master.sw_second.get()) + 1)) == 1 else str(int(self.master.sw_second.get()) + 1))
+                self.master.sw_centi.set("00")
+                if int(self.master.sw_second.get()) == 60:
+                    self.master.sw_second.set("00")
+                    self.master.sw_minute.set(("0" + str(int(self.master.sw_minute.get()) + 1)) if len(
+                        str(int(self.master.sw_minute.get()) + 1)) == 1 else str(int(self.master.sw_minute.get()) + 1))
+            if self.lap_count == 1:
+                lap_variable[0].set(f"{self.master.sw_minute.get()}:{self.master.sw_second.get()}.{self.master.sw_centi.get()}")
+                self.las_centi = int(self.master.sw_centi.get())
+            if self.lap_count > 1:
+                self.centi = (self.centi_sw - self.las_centi) % 100
+                if self.centi == 99:
+                    self.second += 1
+                    if self.second == 60:
+                        self.second = 0
+                        self.minute += 1
+            
+                lap_variable[self.lap_count - 1].set(f"{self.minute if len(str(self.minute))==2 else str(0)+str(self.minute)}:{self.second if len(str(self.second))==2 else str(0)+str(self.second)}.{self.centi if len(str(self.centi))==2 else str(0)+str(self.centi)}")
+                lap_name[self.lap_count - 2].config(font =("Roboto Mono", 12))
+                lap_labels[self.lap_count - 2].config(font =("Roboto Mono", 12))
+        
+            self.root.update_idletasks()
+            time.sleep(0.0075)
+            self.centi_sw += 1
+
+    def add_lap(self):
+        self.lap_count += 1
+        self.reset_lap_val()  # Reset values for the next lap
+
+    def reset_lap_val(self):
+        self.las_centi = self.centi_sw
+        self.second = 0
+        self.minute = 0
+            
 
 
 def reset_sw(master,root):
+    global lap_count
     stop_stopwatch(master, root)
     master.sw_centi.set("00")
     master.sw_second.set("00")
     master.sw_minute.set("00")
-    master.lap_frame.place_forget()
-def add_lap(master, root):
-    global lap_count, new_lap,lap_variable
-
-    new_lap = True
+    #reset lap
+    if lap_count!=0:
+        for i in range(len(lap_name)):
+            lap_name[i].grid_forget()
+            lap_labels[i].grid_forget()
+            lap_separator[i].grid_forget()
+            lap_variable[i].set('')
+        lap_count = 0
+        
+def add_lap(master):
+    global lap_count,lap_variable, lap_name, lap_separator,lap_labels
+    
+    label_font = ("Roboto Mono", 15, 'bold')
 
     lap_labels=[master.lap1,master.lap2,master.lap3,master.lap4,master.lap5]
     lap_name = [master.lap_name1,master.lap_name2,master.lap_name3,master.lap_name4,master.lap_name5]
     lap_separator =[master.lap_spt1,master.lap_spt2,master.lap_spt3,master.lap_spt4,master.lap_spt5]
     lap_variable= [master.lap_1,master.lap_2,master.lap_3,master.lap_4,master.lap_5]
+    #add lab labels to the frame
     if lap_count<5:
         lap_labels[lap_count].grid(row = 10-(2*lap_count), column = 1)
         lap_name[lap_count].grid(row = 10-(2*lap_count), column = 0)
 
-    if lap_count<4:
-        lap_separator[lap_count].grid(row=9-(2*lap_count), column = 0, columnspan=2)
-    lap_count+=1
-    threading.Thread(target=display_rs, args=(lap_variable, sw_stop_flag, master,root), daemon=True).start()
-    
-    
+        lap_labels[lap_count].config(font= label_font)
+        lap_name[lap_count].config(font=label_font)
+
+    if 0<lap_count<5:
+        lap_separator[lap_count].grid(row=11-(2*lap_count), column = 0, columnspan=2)
+    if lap_count<5:
+        lap_count+=1
+        StopWatch.add_lap()
+    else:
+        messagebox.showwarning("Warning!", "You have reached the maximum number of laps")
+        
 
 def move(event, window):
-
-        x = window.winfo_x()-window.startX + event.x
-        y = window.winfo_y()-window.startY + event.y
-        window.geometry(f'+{x}+{y}')
+    x = window.winfo_x()-window.startX + event.x
+    y = window.winfo_y()-window.startY + event.y
+    window.geometry(f'+{x}+{y}')
 
 def origin_cords(event, window):
     window.startX = event.x
     window.startY = event.y
-
-def display_rs(variable, flag, master,root):
-    global lap_count
-    if not(lap_count>5):
-        while lap_count==1:
-            variable[0].set(f"{master.sw_minute.get()}:{master.sw_second.get()}:{master.sw_centi.get()}")
-        if lap_count==2:
-            lap_value(2, variable,root,master)
-        if lap_count==3:
-            lap_value(3, variable,root, master)
-        if lap_count==4:
-            lap_value(4, variable,root, master)
-        if lap_count==5:
-            lap_value(5,variable,root, master)
-    else:
-        messagebox.showwarning("Warning!", "You can only add five labs.")
-
-        
-def lap_value(lap_iden, variable, root,master):
-    global lap_count,sw_stop_flag,minute_lap,second_lap,centi_lap
-    if new_lap:
-        minute_lap = int(master.sw_minute.get())
-        second_lap = int(master.sw_second.get())
-        centi_lap = int(master.sw_centi.get())
-        
-    while lap_count==lap_iden:
-        if not sw_stop_flag:
-            minute=abs(int(master.sw_minute.get())-minute_lap)
-            second = abs(int(master.sw_second.get())-second_lap)
-            centi=abs(int(master.sw_centi.get())-centi_lap)
-            display_minute = str(minute) if len(str(minute)) ==2 else f"0{minute}"
-            display_second = str(second) if len(str(second)) ==2 else f"0{second}"
-            display_centi = str(centi) if len(str(centi)) ==2 else f"0{centi}"
-            variable[lap_count-1].set(f"{display_minute}:{display_second}:{display_centi}")
-            time.sleep(0.01)
-            root.update_idletasks()
-        else:
-            break
-        
