@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 from Function import *
-from tkextrafont import Font
 
 
 # create interface
@@ -23,7 +22,6 @@ class UI:
         # define font
         # seem not to work('TclError' object has no attribute 'message')
         #self.roboto_mono = Font(file="Assets\\RobotoMono-Regular.ttf", family="Roboto Mono")
-
         # Timer Tab_UI
         
         self.minutes = StringVar()
@@ -109,14 +107,14 @@ class UI:
         # minute UI that allow user to input minute
         self.minute_ui = ttk.Entry(
             minute_frame,
-            font=("Roboto mono", 50),
+            font=("Roboto Mono", 50),
             width=5,
 
             justify=RIGHT,
             textvariable=self.minutes
         )
         self.minute_ui.grid(row=0, column=0)
-        Label(minute_frame, text="m", font=("Roboto mono", 20)).grid(
+        Label(minute_frame, text="m", font=("Roboto Mono", 20)).grid(
             row=0, column=1, sticky=S
         )
         self.minute_ui.bind(
@@ -126,7 +124,7 @@ class UI:
         # second UI that allow user to input second
         self.second_ui = ttk.Entry(
             second_frame,
-            font=("Roboto mono", 50),
+            font=("Roboto Mono", 50),
             width=5,
 
             justify=RIGHT,
@@ -134,7 +132,7 @@ class UI:
 
         )
         self.second_ui.grid(row=0, column=0)
-        Label(second_frame, text="s", font=("Roboto mono", 20)).grid(
+        Label(second_frame, text="s", font=("Roboto Mono", 20)).grid(
             row=0, column=1, sticky=S
         )
         self.second_ui.bind(
@@ -209,23 +207,23 @@ class UI:
 
         # stop watch label
         stop_watch_frame = Frame(self.canvas)
-        stop_watch_frame.place(relx=0.37, rely=0.4)
+        stop_watch_frame.place(relx=0.36, rely=0.4)
         self.minute_label = Label(stop_watch_frame, font=(
-            "Roboto mono", 35), textvariable=self.sw_minute)
+            "Roboto Mono", 35), textvariable=self.sw_minute)
         self.minute_label.grid(row=0, column=0)
 
         self.second_label = Label(stop_watch_frame, font=(
-            "Roboto mono", 35), textvariable=self.sw_second)
+            "Roboto Mono", 35), textvariable=self.sw_second)
         self.second_label.grid(row=0, column=2)
 
         self.centisecond = Label(stop_watch_frame, font=(
-            "Roboto mono", 25), textvariable=self.sw_centi)
-        self.centisecond.grid(row=0, column=4)
+            "Roboto Mono", 35), textvariable=self.sw_centi)
+        self.centisecond.grid(row=0, column=4, sticky='s')
         # insert (:)
         Label(stop_watch_frame, text=":", font=(
-            "Roboto mono", 35)).grid(row=0, column=1)
-        Label(stop_watch_frame, text=".", font=(
-            "Roboto mono", 35)).grid(row=0, column=3)
+            "Roboto Mono", 35)).grid(row=0, column=1)
+        Label(stop_watch_frame, text=":", font=(
+            "Roboto Mono", 35)).grid(row=0, column=3, sticky='w')
             
         #set the initial value
         self.sw_centi.set("00")
@@ -250,19 +248,19 @@ class UI:
         
         self.lap_spt1=Label(self.lap_frame,
                  text="────────────",
-                 font=("Roboto mono", 12))
+                 font=("Roboto Mono", 12))
         self.lap_spt2=Label(self.lap_frame,
                  text="────────────",
-                 font=("Roboto mono", 12))
+                 font=("Roboto Mono", 12))
         self.lap_spt3=Label(self.lap_frame,
                  text="────────────",
-                 font=("Roboto mono", 12))
+                 font=("Roboto Mono", 12))
         self.lap_spt4=Label(self.lap_frame,
                  text="────────────",
-                 font=("Roboto mono", 12))
+                 font=("Roboto Mono", 12))
         self.lap_spt5=Label(self.lap_frame,
                  text="────────────",
-                 font=("Roboto mono", 12))
+                 font=("Roboto Mono", 12))
         
     def close_win(self, root):
         stop_stopwatch(self, root)

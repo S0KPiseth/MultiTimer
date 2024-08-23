@@ -1,5 +1,3 @@
-# timer watch function
-import multiprocessing.process
 import time
 import tkinter as tk
 import threading
@@ -8,6 +6,7 @@ from tkinter import ttk, messagebox
 import math
 from PIL import Image, ImageTk
 from pygame import mixer  # type: ignore
+import pyglet
 
 
 #set up flags
@@ -25,6 +24,12 @@ lap_variable =[]
 minute_lap = 0
 second_lap = 0
 centi_lap = 0
+
+#add font
+#https://stackoverflow.com/questions/75999061/pyglet-working-only-with-installed-fonts
+pyglet.options['win32_gdi_font'] = True
+pyglet.font.add_file("Assets\\RobotoMono-Regular.ttf")
+pyglet.font.add_file("Assets\\RobotoMono-Bold.ttf")
 
 #get photoimage
 def get_img(img, width=20, height=20):
@@ -110,18 +115,13 @@ def reset_timer(master, root):
         change_theme(master, root)
 
 def change_theme(master, root):
-    global timer_icon, stop_watch, start_icon, stop_icon, timer_icon_white, \
-        stop_watch_white, timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
-        close, minimize,maximize, logo_img,un_maximize
+    global start_icon, stop_icon,timer_notst, stop_watch_notst, pause_sp, pause_sp_white, reset, reset_white,\
+        close, minimize,maximize, logo_img,un_maximize, timer_icon_st,stop_watch_st
 
     # identify tab id
     tab_index = int(master.notebook.index(master.notebook.select()))
 
     # get icon as photoimage
-    timer_icon_white = get_img("Assets\\hourglass_white.png", )
-    stop_watch_white = get_img("Assets\\stopwatch_white.png", )
-    timer_icon = get_img("Assets\\hourglass.png", )
-    stop_watch = get_img("Assets\\stopwatch.png", )
     timer_notst = get_img("Assets\\hourglass_notst.png", )
     stop_watch_notst = get_img("Assets\\stopwatch_notst.png", )
 
@@ -135,6 +135,11 @@ def change_theme(master, root):
     reset = get_img("Assets\\reset.png", 20, 20)
     reset_white = get_img("Assets\\reset_white.png", 20, 20)
 
+    #fill icon
+    timer_icon_st= get_img("Assets\\hourglass_st.png")
+    stop_watch_st=get_img("Assets\\stopwatch_st.png")
+
+
     logo_img = get_img('Assets\\my_logo.png',25,25)
     # apply theme
     if master.theme_value.get():
@@ -146,6 +151,9 @@ def change_theme(master, root):
         minimize = get_img("Assets\\minus_white.png", 25, 25)
         maximize = get_img("Assets\\maximize-2_white.png", 25, 25)
         un_maximize = get_img("Assets\\un_maximize_white.png",25,25)
+
+        timer_icon_st=get_img("Assets\\hourglass_st_white.png")
+        stop_watch_st=get_img("Assets\\stopwatch_st_white.png")
 
         master.close.config(activebackground=color, image=close)
         master.minimize.config(activebackground=color,image=minimize)
@@ -170,11 +178,9 @@ def change_theme(master, root):
             stop_icon = reset_white
 
         if tab_index == 1:
-            timer_icon = timer_icon_white
-            stop_watch = stop_watch_notst
+            stop_watch_st = stop_watch_notst
         elif tab_index == 2:
-            stop_watch = stop_watch_white
-            timer_icon = timer_notst
+            timer_icon_st = timer_notst
     else:
         color = '#e7e7e7'
         master.close.config(activebackground=color,image=close)
@@ -199,12 +205,12 @@ def change_theme(master, root):
         if master.stop_flag:
             stop_icon = reset
         if tab_index == 1:
-            stop_watch = stop_watch_notst
+            stop_watch_st = stop_watch_notst
         elif tab_index == 2:
-            timer_icon = timer_notst
+            timer_icon_st = timer_notst
 
-    master.notebook.tab(1, image=timer_icon)
-    master.notebook.tab(2, image=stop_watch)
+    master.notebook.tab(1, image=timer_icon_st)
+    master.notebook.tab(2, image=stop_watch_st)
 
     master.start_button.configure(image=start_icon)
     master.stop_button.configure(
@@ -231,13 +237,13 @@ def customize_style(window, theme):
     
     if theme:
         style.map("TNotebook.Tab",  foreground=[("selected", 'white'), ("!selected", '#8b8b8b')],
-                  font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
+                  font=[("selected", ("Roboto Mono", 15, "bold")), ("!selected", ("Roboto Mono", 15))])
     else:
         style.map("TNotebook.Tab",  foreground=[
                   ("selected", 'black'), ("!selected", '#8b8b8b')],
-                  font=[("selected", ("Roboto mono", 15, "bold")), ("!selected", ("Roboto mono", 15))])
-    style.configure("TButton", font=("Roboto mono", 12))
-    style.configure("Switch.TCheckbutton", font=("Roboto mono", 12))
+                  font=[("selected", ("Roboto Mono", 15, "bold")), ("!selected", ("Roboto Mono", 15))])
+    style.configure("TButton", font=("Roboto Mono", 12))
+    style.configure("Switch.TCheckbutton", font=("Roboto Mono", 12))
 
 #enter window full screen function for custom maximize button
 def maximize_win(master,root):
@@ -298,16 +304,16 @@ def move_circle(master):
         master.canvas.after(20, lambda: move_circle(master))
 
 def start_stopwatch(master, root):
-    global sw_stop_flag
+    global sw_stop_flag, new_lap
     #prevent from set the default lap variable to 0 when after start the stopwatch again
-    new_lap=False
+    if new_lap:
+        new_lap=False
+        threading.Thread(target=lap_value, args=(lap_count, root,master), daemon=True).start()
 
     if not master.sp_start_flag:
         master.sp_start_flag = True
     if sw_stop_flag:
         sw_stop_flag = False
-        threading.Thread(target=lap_value, args=(lap_count, root,master), daemon=True).start()
-
     master.reset_button.grid(row=0, column=1)
     master.stop_watchBtn.config(width=15)
     change_theme(master, root)
@@ -363,7 +369,7 @@ def add_lap(master, root):
     global lap_count,lap_variable, lap_name, lap_separator,lap_labels, new_lap
 
     new_lap=True
-    label_font = ("Roboto mono", 15, 'bold')
+    label_font = ("Roboto Mono", 15, 'bold')
 
     lap_labels=[master.lap1,master.lap2,master.lap3,master.lap4,master.lap5]
     lap_name = [master.lap_name1,master.lap_name2,master.lap_name3,master.lap_name4,master.lap_name5]
@@ -396,10 +402,10 @@ def origin_cords(event, window):
 
 def display_rs(master,root):
     while lap_count==1:
-        lap_variable[0].set(f"{master.sw_minute.get()}:{master.sw_second.get()}:{master.sw_centi.get()}")
+        lap_variable[0].set(f"{master.sw_minute.get()}:{master.sw_second.get()}.{master.sw_centi.get()}")
     if lap_count==2:
-        lap_name[0].config(font =("Roboto mono", 12))
-        lap_labels[0].config(font =("Roboto mono", 12))
+        lap_name[0].config(font =("Roboto Mono", 12))
+        lap_labels[0].config(font =("Roboto Mono", 12))
         lap_value(2,root,master)
     if lap_count==3:
         lap_value(3,root, master)
@@ -422,12 +428,12 @@ def lap_value(lap_iden,root,master):
             display_minute = str(minute) if len(str(minute)) ==2 else f"0{minute}"
             display_second = str(second) if len(str(second)) ==2 else f"0{second}"
             display_centi = str(centi) if len(str(centi)) ==2 else f"0{centi}"
-            lap_variable[lap_count-1].set(f"{display_minute}:{display_second}:{display_centi}")
+            lap_variable[lap_count-1].set(f"{display_minute}:{display_second}.{display_centi}")
             time.sleep(0.01)
             root.update_idletasks()
         else:
             break
     if not sw_stop_flag:
-        lap_name[lap_iden-1].config(font =("Roboto mono", 12))
-        lap_labels[lap_iden-1].config(font =("Roboto mono", 12))
+        lap_name[lap_iden-1].config(font =("Roboto Mono", 12))
+        lap_labels[lap_iden-1].config(font =("Roboto Mono", 12))
         
