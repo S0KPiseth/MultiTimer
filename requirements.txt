@@ -1,4 +1,4 @@
 Pillow==10.4.0
 pygame==2.6.0
 sv_ttk==2.6.0
-tkextrafont==0.6.3
+pyglet==2.0.17
