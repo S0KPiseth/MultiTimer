@@ -21,8 +21,8 @@ Here're some of the project's best features:
 
 | Theme: Light                                | Theme: Dark                               |
 |---------------------------------------------|--------------------------------------------|
-| ![Timer Light](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_timer_light.png) | ![Timer Dark](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_timer_dark.png) |
-| ![Stopwatch Light](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_stopwatch_inactive_light.png) | ![Stopwatch Dark](https://github.com/S0KPiseth/MultiTimer/blob/main/screenshots/multitimer_stopwatch_active_dark.png) |
+| ![Timer Light](https://github.com/S0KPiseth/MultiTimer/blob/lap/screenshots/multitimer_timer_light.png) | ![Timer Dark](https://github.com/S0KPiseth/MultiTimer/blob/lap/screenshots/multitimer_timer_dark.png) |
+| ![Stopwatch Light](https://github.com/S0KPiseth/MultiTimer/blob/lap/screenshots/multitimer_stopwatch_inactive_light.png) | ![Stopwatch Dark](https://github.com/S0KPiseth/MultiTimer/blob/lap/screenshots/multitimer_stopwatch_active_dark.png) |
 
 
 ## Installing
