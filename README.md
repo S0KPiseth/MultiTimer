@@ -37,14 +37,9 @@ Here're some of the project's best features:
     ```
 
 3. **Activate the virtual environment:**
-    - On Windows:
-      ```sh
-      venv\Scripts\activate
-      ```
-    - On macOS/Linux:
-      ```sh
-      source venv/bin/activate
-      ```
+    ```sh
+    venv\Scripts\activate
+    ```
 4. **Install requirement dependencies**
    ```
    pip install -r requirements.txt
