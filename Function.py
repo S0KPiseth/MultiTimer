@@ -332,6 +332,7 @@ class SW:
         self.lap_count = 0  # Initialize lap count to 0
 
     def stopwatch(self):
+        move_circle(self.master)
         while not sw_stop_flag:
             self.master.sw_centi.set(("0" + str(self.centi_sw % 100)) if len(str(self.centi_sw % 100)) == 1 else str(self.centi_sw % 100))
             if int(self.master.sw_centi.get()) == 99:
